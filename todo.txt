@@ -1,0 +1,57 @@
+Lab 4 – Stack-Based VM
+=====================
+
+LEGEND:
+[ ] Not started
+[~] In progress
+[x] Completed
+
+----------------------------------------
+GENERAL
+----------------------------------------
+[x] Project structure finalized
+[x] Build system (Makefile) working
+[x] Test cases written
+
+----------------------------------------
+ASSEMBLER (Monit)
+----------------------------------------
+[ ] Parse .asm file line by line
+[ ] Implement instruction → opcode mapping
+[ ] Implement label table (1st pass)
+[ ] Implement label resolution (2nd pass)
+[ ] Emit instruction_t array
+[ ] Error handling for invalid syntax
+
+----------------------------------------
+VIRTUAL MACHINE (Anunay)
+----------------------------------------
+[ ] Implement full arithmetic instructions
+[ ] Implement LOAD / STORE
+[ ] Implement CMP semantics
+[ ] Implement JMP / JZ / JNZ
+[ ] Implement CALL / RET using call stack
+[ ] Add runtime error checks (stack underflow)
+
+----------------------------------------
+TESTING & VALIDATION
+----------------------------------------
+[ ] Verify all test cases run correctly
+[ ] Add edge case tests (empty stack, bad jump)
+[ ] Print final stack top for demo
+
+----------------------------------------
+REPORT
+----------------------------------------
+[ ] Architecture description
+[ ] Instruction set explanation
+[ ] Execution flow diagram
+[ ] Benchmark discussion
+[ ] Limitations and future work
+
+----------------------------------------
+FINAL CHECK
+----------------------------------------
+[ ] Clean build (make clean && make)
+[ ] No warnings (-Wall -Wextra)
+[ ] Submission archive created

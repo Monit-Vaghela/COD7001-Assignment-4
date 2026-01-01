@@ -1,0 +1,18 @@
+# ===== Build artifacts =====
+lab4_vm
+*.o
+*.out
+*.exe
+
+# ===== Temporary files =====
+*~
+*.swp
+*.tmp
+
+# ===== OS / editor junk =====
+.DS_Store
+.vscode/
+.idea/
+
+# ===== Archives (submission only) =====
+lab4_*.tar.gz

@@ -1,0 +1,8 @@
+# (10 + 20) * 3 = 90
+
+PUSH 10
+PUSH 20
+ADD
+PUSH 3
+MUL
+HALT
