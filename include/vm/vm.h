@@ -6,16 +6,17 @@
 #include <vm/instruction.h>
 
 typedef struct {
-    instruction_t *code;
+    unsigned char *code;
     int code_size;
     int pc;
+    int running;
 
-    stack_t stack;
-    stack_t call_stack;
-    memory_t memory;
-} vm_t;
+    stack stack;
+    stack call_stack;
+    memory memory;
+} vm;
 
-void vm_init(vm_t *vm, instruction_t *code, int code_size);
-void vm_run(vm_t *vm);
+void vm_init(vm *vm, unsigned char *code, int code_size);
+void vm_run(vm *vm);
 
 #endif

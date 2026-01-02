@@ -6,11 +6,14 @@
 typedef struct {
     int data[STACK_MAX];
     int top;
-} stack_t;
+} stack;
+extern int error_flag;
 
-void stack_init(stack_t *s);
-void stack_push(stack_t *s, int value);
-int  stack_pop(stack_t *s);
-int  stack_peek(stack_t *s);
+void stack_init(stack *s);
+int stack_push(stack *s, int value);
+int stack_pop(stack *s);
+int stack_isempty(stack *s);
+int stack_isfull(stack *s);
+void stack_print(stack *s);
 
 #endif
