@@ -14,7 +14,7 @@ GENERAL
 [x] Test cases written
 
 ----------------------------------------
-ASSEMBLER (Monit)
+ASSEMBLER (Anunay)
 ----------------------------------------
 [ ] Parse .asm file line by line
 [ ] Implement instruction → opcode mapping
@@ -24,14 +24,15 @@ ASSEMBLER (Monit)
 [ ] Error handling for invalid syntax
 
 ----------------------------------------
-VIRTUAL MACHINE (Anunay)
+VIRTUAL MACHINE (Monit)
 ----------------------------------------
-[ ] Implement full arithmetic instructions
+[x] Implement full arithmetic instructions
 [ ] Implement LOAD / STORE
 [ ] Implement CMP semantics
 [ ] Implement JMP / JZ / JNZ
 [ ] Implement CALL / RET using call stack
 [ ] Add runtime error checks (stack underflow)
+[ ] Add Condition to check pc increment on >1 byte opcode
 
 ----------------------------------------
 TESTING & VALIDATION
@@ -55,3 +56,15 @@ FINAL CHECK
 [ ] Clean build (make clean && make)
 [ ] No warnings (-Wall -Wextra)
 [ ] Submission archive created
+
+----------------------------------------
+Facts to be mentions
+----------------------------------------
+1. Bytecode is assumed to be valid (i.e no issue with bytecode)
+2. CMP uses a-b logic, i.e
+| Expression | Result   | JZ      | JNZ     |
+| ---------- | -------- | ------- | ------- |
+| `a == b`   | `0`      | jump    | no jump |
+| `a != b`   | non-zero | no jump | jump    |
+| `a < b`    | negative | no jump | jump    |
+| `a > b`    | positive | no jump | jump    |

@@ -1,13 +1,34 @@
 #include <vm/vm.h>
 #include <stdio.h>
 
-static int arithmatic_underflow(vm *vm){
+static int vm_error_flag = 0;
+
+static int arithmatic_underflow(vm *vm, char *operator){
     if(vm->stack.top < 1){
-        printf("[VM ERROR / %d] Not enough Operands to perform ADD\n", vm->pc);
+        printf("[VM ERROR / %d] Not enough Operands on stack to perform %s\n", vm->pc, operator);
         vm->running = 0;
         return 1;
     }
     return 0;
+}
+
+static int check_loop(vm *vm, char *loop_type){
+    if (vm->pc + 1 >= vm->code_size) {
+        printf("[VM Error / %d] %s requires another byte\n", vm->pc, loop_type);
+        vm->running = 0;
+        vm_error_flag = 1;
+        return 1;
+    }
+
+    int addr = vm->code[vm->pc + 1];
+
+    if (addr >= vm->code_size) {
+        printf("[VM Error / %d] Out of Bound Address\n", vm->pc);
+        vm->running = 0;
+        error_flag = 1;
+        return 1;
+    }
+    return addr;
 }
 
 void vm_init(vm *vm, unsigned char *code, int code_size) {
@@ -59,7 +80,7 @@ void vm_run(vm *vm) {
             }
 
             case ADD:{
-                if(arithmatic_underflow(vm) != 0) break;
+                if(arithmatic_underflow(vm, "ADD") != 0) break;
 
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
@@ -69,7 +90,7 @@ void vm_run(vm *vm) {
             }
 
             case SUB:{
-                if(arithmatic_underflow(vm) != 0) break;
+                if(arithmatic_underflow(vm, "SUB") != 0) break;
 
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
@@ -79,7 +100,7 @@ void vm_run(vm *vm) {
             }
 
             case MUL:{
-                if(arithmatic_underflow(vm) != 0) break;
+                if(arithmatic_underflow(vm, "MUL") != 0) break;
 
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
@@ -89,7 +110,7 @@ void vm_run(vm *vm) {
             }
 
             case DIV:{
-                if(arithmatic_underflow(vm) != 0) break;
+                if(arithmatic_underflow(vm, "DIV") != 0) break;
 
                 int b = stack_pop(&vm->stack);
                 if(b == 0){
@@ -105,7 +126,7 @@ void vm_run(vm *vm) {
             }
 
             case CMP:{
-                if(arithmatic_underflow(vm) != 0) break;
+                if(arithmatic_underflow(vm, "CMP") != 0) break;
             
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
@@ -116,6 +137,52 @@ void vm_run(vm *vm) {
                     stack_push(&vm->stack, 0);
                 }
                 (vm->pc)++;
+                break;
+            }
+
+            case JMP:{
+                int addr = check_loop(vm, "JMP");
+                if(vm_error_flag != 0) break;
+                // printf("JUMPING TO %d\n", addr);
+                vm->pc = addr;
+                break;     
+            }
+
+            case JZ:{
+                int top = stack_pop(&vm->stack);
+                if (error_flag) {
+                    vm->running = 0;
+                    break;
+                }
+
+                int addr = check_loop(vm, "JZ");
+                if(vm_error_flag != 0) break;
+
+                if (top == 0) {
+                    printf("JUMPING TO %d\n", addr);
+                    vm->pc = addr;
+                } else {
+                    vm->pc += 2;
+                }
+                break;
+            }
+
+            case JNZ:{
+                int top = stack_pop(&vm->stack);
+                if (error_flag) {
+                    vm->running = 0;
+                    break;
+                }
+
+                int addr = check_loop(vm, "JNZ");
+                if(vm_error_flag != 0) break;
+
+                if (top != 0) {
+                    printf("JUMPING TO %d\n", addr);
+                    vm->pc = addr;
+                } else {
+                    vm->pc += 2;
+                }
                 break;
             }
 
