@@ -13,10 +13,10 @@ typedef struct {
 
     stack stack;
     stack call_stack;
-    int *memory;
+    int memory[MEM_SIZE];
 } vm;
 
 void vm_init(vm *vm, unsigned char *code, int code_size);
-void vm_run(vm *vm);
+void vm_run(vm *vm, int debug);
 
 #endif

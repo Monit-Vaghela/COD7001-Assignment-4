@@ -62,17 +62,23 @@ void vm_init(vm *vm, unsigned char *code, int code_size){
     memory_init(vm->memory);
 }
 
-void vm_run(vm *vm) {
-    while(vm->running){
+void vm_run(vm *vm, int debug) {
+    while(vm->running && vm->pc < vm->code_size){
         unsigned char opcode = vm->code[vm->pc];
-        print_vm_state(vm, opcode);
+        if(debug) print_vm_state(vm, opcode);
         //printf("Current Instruction : %02x\n", current_instr);
         switch (opcode){
 
             case PUSH:{
+                if(check_next_byte(vm, "PUSH") != 0 ) break;
+    
                 (vm->pc)++;
                 int operand = vm->code[vm->pc];
-                stack_push(&vm->stack, operand);
+                if(stack_push(&vm->stack, operand) != 0){
+                    printf("[VM Error / %d]: Stack is Full Cannot Push\n", vm->pc);
+                    vm->running = 0;
+                    break;
+                }
                 (vm->pc)++;
                 break;
             }
@@ -80,6 +86,7 @@ void vm_run(vm *vm) {
             case POP:{
                 stack_pop(&vm->stack);
                 if(stck_error_flag){
+                    printf("[VM Error / %d]: Stack Is Empty Cannot Pop\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
@@ -163,7 +170,7 @@ void vm_run(vm *vm) {
             case JMP:{
                 int addr = check_loop(vm, "JMP");
                 if(vm_error_flag != 0) break;
-                // printf("JUMPING TO %d\n", addr);
+                if (debug) printf("JUMPING TO %d\n", addr);
                 vm->pc = addr;
                 break;     
             }
@@ -171,6 +178,7 @@ void vm_run(vm *vm) {
             case JZ:{
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
+                    printf("[VM Error / %d]: Stack is empty\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
@@ -179,7 +187,7 @@ void vm_run(vm *vm) {
                 if(vm_error_flag != 0) break;
 
                 if (top == 0) {
-                    printf("JUMPING TO %d\n", addr);
+                    if (debug) printf("JUMPING TO %d\n", addr);
                     vm->pc = addr;
                 } else {
                     vm->pc += 2;
@@ -190,6 +198,7 @@ void vm_run(vm *vm) {
             case JNZ:{
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
+                    printf("[VM Error / %d]: Stack is empty\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
@@ -198,7 +207,7 @@ void vm_run(vm *vm) {
                 if(vm_error_flag != 0) break;
 
                 if (top != 0) {
-                    printf("JUMPING TO %d\n", addr);
+                    if (debug) printf("JUMPING TO %d\n", addr);
                     vm->pc = addr;
                 } else {
                     vm->pc += 2;
@@ -212,6 +221,7 @@ void vm_run(vm *vm) {
                 int addr = vm->code[vm->pc + 1];
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
+                    printf("[VM Error / %d]: Stack is empty\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
@@ -219,8 +229,7 @@ void vm_run(vm *vm) {
                     vm->running = 0;
                     break;
                 }
-                
-                printf("DATA STORED AT %d is %d\n", addr, top);
+                if (debug) printf("DATA STORED AT %d is %d\n", addr, top);
                 (vm->pc) += 2;
                 
                 break;
@@ -237,7 +246,7 @@ void vm_run(vm *vm) {
                 }
                 stack_push(&vm->stack, data);
 
-                printf("DATA %d Loaded from %d\n", data, addr);
+                if (debug) printf("DATA %d Loaded from %d\n", data, addr);
                 (vm->pc) += 2;
                 break;
             }
@@ -253,6 +262,7 @@ void vm_run(vm *vm) {
                 }
 
                 if (stack_push(&vm->call_stack, vm->pc + 2) != 0) {
+                    printf("[VM Error / %d]: Call Stack is Full\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
@@ -288,5 +298,6 @@ void vm_run(vm *vm) {
                 break;
             }
     }
-    
+    printf("\n\nFINAL VM STATE\n");
+    print_vm_state(vm, 0xFF);
 }
