@@ -3,10 +3,9 @@
 
 #define MEM_SIZE 1024
 
-typedef struct {
-    int data[MEM_SIZE];
-} memory_t;
-
-void memory_init(memory_t *m);
+extern int mem_error_flag;
+void memory_init(int *memory);
+int memory_load(int *memory, int addr);
+int memory_store(int *memory, int addr, int data);
 
 #endif

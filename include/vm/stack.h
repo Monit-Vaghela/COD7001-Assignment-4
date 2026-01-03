@@ -7,7 +7,7 @@ typedef struct {
     int data[STACK_MAX];
     int top;
 } stack;
-extern int error_flag;
+extern int stck_error_flag;
 
 void stack_init(stack *s);
 int stack_push(stack *s, int value);
