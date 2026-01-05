@@ -63,14 +63,10 @@ int main(int argc, char **argv) {
     }
 
     if (strcmp(mode, "-ae") == 0) {
-        if (assemble(file, NULL) < 0) return 1;
+    code_size = assemble(file, &code);
+    if (code_size < 0) return 1;
+}
 
-        char bin_name[256];
-        snprintf(bin_name, sizeof(bin_name), "%s.bin", file);
-
-        code = load_bin(bin_name, &code_size);
-        if (!code) return 1;
-    }
 
     printf("Debug mode: %s\n", debug ? "ON" : "OFF");
 
