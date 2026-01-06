@@ -57,8 +57,9 @@ This generates the executable:
 To simplify testing, their is a script file in `tests/run_tests.sh`
 This runs all the test cases in tests folder, to run
 ```bash
-chmod +x tests/run_tests.sh
-./tests/run_tests.sh
+cd tests/
+chmod +x ./run_tests.sh
+./run_tests.sh
 ```
 This writes output in `tests/output.txt`
 

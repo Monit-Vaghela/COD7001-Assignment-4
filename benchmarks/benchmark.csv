@@ -2,9 +2,9 @@ metric,value
 instruction_count,205
 
 category,time_seconds,percentage
-stack,0.000243,21.19
-memory,0.000090,7.85
-alu,0.000044,3.84
-control,0.000056,4.88
-other,0.000714,62.25
-total,0.001147,100.00
+stack,0.000252,1.45
+memory,0.000086,0.50
+alu,0.000033,0.19
+control,0.000154,0.89
+other,0.016835,96.98
+total,0.017360,100.00

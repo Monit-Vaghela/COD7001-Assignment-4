@@ -1,10 +1,10 @@
 ================ Execution Time Breakdown ================
 Total Instructions Executed : 205
 
-Total Execution Time : 0.001147 s (100.00%)
-Stack Operations     : 0.000243 s ( 21.19%)
-Memory Operations    : 0.000090 s (  7.85%)
-ALU Operations       : 0.000044 s (  3.84%)
-Control Instructions : 0.000056 s (  4.88%)
-Other                : 0.000714 s ( 62.25%)
+Total Execution Time : 0.017360 s (100.00%)
+Stack Operations     : 0.000252 s (  1.45%)
+Memory Operations    : 0.000086 s (  0.50%)
+ALU Operations       : 0.000033 s (  0.19%)
+Control Instructions : 0.000154 s (  0.89%)
+Other                : 0.016835 s ( 96.98%)
 ==========================================================

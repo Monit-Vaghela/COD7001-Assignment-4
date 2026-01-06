@@ -61,11 +61,14 @@ static void print_vm_state(vm *vm, unsigned char opcode){
     stack_print(&vm->call_stack);
 
     printf("\n---------------------- MEMORY -----------------------\n");
+    int found = 0;
     for(int i = 0; i < MEM_SIZE; i++){
         if(mem_initialized[i]){
             printf("[ADDR %3d] = %d\n", i, vm->memory[i]);
+            found = 1;
         }
     }
+    if(!found) printf("NO Initialized Memory\n");
 
     printf("====================================================\n");
 }
