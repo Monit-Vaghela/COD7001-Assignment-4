@@ -27,17 +27,17 @@ ASSEMBLER (Anunay)
 VIRTUAL MACHINE (Monit)
 ----------------------------------------
 [x] Implement full arithmetic instructions
-[ ] Implement LOAD / STORE
-[ ] Implement CMP semantics
-[ ] Implement JMP / JZ / JNZ
-[ ] Implement CALL / RET using call stack
-[ ] Add runtime error checks (stack underflow)
-[ ] Add Condition to check pc increment on >1 byte opcode
+[x] Implement LOAD / STORE
+[x] Implement CMP semantics
+[x] Implement JMP / JZ / JNZ
+[x] Implement CALL / RET using call stack
+[x] Add runtime error checks (stack underflow)
+[x] Add Condition to check pc increment on >1 byte opcode
 
 ----------------------------------------
 TESTING & VALIDATION
 ----------------------------------------
-[ ] Verify all test cases run correctly
+[x] Verify all test cases run correctly
 [ ] Add edge case tests (empty stack, bad jump)
 [ ] Print final stack top for demo
 
@@ -86,3 +86,13 @@ Facts to be mentions
     * -e : means only execure, input: .bin output: Execution
     * -ae : Streamline assemble and Execution
     * -d : print Debugging info.
+6. hard test cases has named test cases aswell
+    * test6.asm -> array addition using loop
+    * test7.asm -> GCD
+
+
+
+to do :
+    * Add lt, gt and mod operands
+    * check for out of bound memory acess in load and store (invalid/test3, test4)
+    * pretty print

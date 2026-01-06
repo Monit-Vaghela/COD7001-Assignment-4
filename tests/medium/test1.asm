@@ -1,21 +1,27 @@
-# Sum numbers from 1 to 5 → 15
+# Sum 1..10 = 55
 
 PUSH 0        # sum
+STORE 0
+
 PUSH 1        # i
+STORE 1
 
 loop:
-DUP
-PUSH 6
+LOAD 1
+PUSH 11
 CMP
 JZ end
 
-DUP
 LOAD 0
+LOAD 1
 ADD
 STORE 0
 
+LOAD 1
 PUSH 1
 ADD
+STORE 1
+
 JMP loop
 
 end:

@@ -1,0 +1,6 @@
+# 6 * 7 = 42
+
+PUSH 6
+PUSH 7
+MUL
+HALT

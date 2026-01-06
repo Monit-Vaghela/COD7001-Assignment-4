@@ -1,0 +1,6 @@
+# (5 * 5) = 25
+
+PUSH 5
+DUP
+MUL
+HALT

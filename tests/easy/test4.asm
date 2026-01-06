@@ -1,0 +1,6 @@
+# 40 / 5 = 8
+
+PUSH 40
+PUSH 5
+DIV
+HALT

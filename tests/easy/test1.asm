@@ -1,0 +1,6 @@
+# 10 + 5 = 15
+
+PUSH 10
+PUSH 5
+ADD
+HALT

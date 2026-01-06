@@ -1,0 +1,6 @@
+# 20 - 7 = 13
+
+PUSH 20
+PUSH 7
+SUB
+HALT
