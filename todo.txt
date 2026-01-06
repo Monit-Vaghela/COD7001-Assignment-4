@@ -38,55 +38,24 @@ VIRTUAL MACHINE (Monit)
 TESTING & VALIDATION
 ----------------------------------------
 [x] Verify all test cases run correctly
-[ ] Add edge case tests (empty stack, bad jump)
-[ ] Print final stack top for demo
+[x] Add edge case tests (empty stack, bad jump)
+[x] Print final stack top for demo
 
 ----------------------------------------
 REPORT
 ----------------------------------------
-[ ] Architecture description
-[ ] Instruction set explanation
-[ ] Execution flow diagram
-[ ] Benchmark discussion
-[ ] Limitations and future work
+[x] Architecture description
+[x] Instruction set explanation
+[x] Execution flow diagram
+[x] Benchmark discussion
+[x] Limitations and future work
 
 ----------------------------------------
 FINAL CHECK
 ----------------------------------------
-[ ] Clean build (make clean && make)
-[ ] No warnings (-Wall -Wextra)
-[ ] Submission archive created
+[x] Clean build (make clean && make)
+[x] No warnings (-Wall -Wextra)
+[x] Submission archive created
 
-----------------------------------------
-Facts to be mentions
-----------------------------------------
-1. Bytecode is assumed to be valid (i.e no issue with bytecode)
-2. CMP uses a-b logic, i.e
-| Expression | Result   | JZ      | JNZ     |
-| ---------- | -------- | ------- | ------- |
-| `a == b`   | `0`      | jump    | no jump |
-| `a != b`   | non-zero | no jump | jump    |
-| `a < b`    | negative | no jump | jump    |
-| `a > b`    | positive | no jump | jump    |
 
-3. Opcode lengths
-| Instruction | Bytes |
-| ----------- | ----- |
-| PUSH val    | 2     |
-| JMP addr    | 2     |
-| JZ / JNZ    | 2     |
-| STORE idx   | 2     |
-| LOAD idx    | 2     |
-| CALL addr   | 2     |
-| Others      | 1     |
 
-4. Talk about Error message format.
-5. the arguments
-    * -a : means only assemble, input : .asm, output: .bin
-    * -e : means only execure, input: .bin output: Execution
-    * -ae : Streamline assemble and Execution
-    * -d : print Debugging info.
-6. hard test cases has named test cases aswell
-    * test6.asm -> array addition using loop
-    * test7.asm -> GCD
-7. sh script only runs -ae mode without debug, also it stores the output in output.txt
