@@ -25,18 +25,18 @@ run_folder () {
         return
     fi
 
-    echo "==============================" >> "$OUT_FILE"
-    echo "TEST GROUP: $folder" >> "$OUT_FILE"
-    echo "==============================" >> "$OUT_FILE"
+    echo "================================================================================" >> "$OUT_FILE"
+    echo "                          TEST GROUP: $folder" >> "$OUT_FILE"
+    echo "================================================================================" >> "$OUT_FILE"
     echo "" >> "$OUT_FILE"
 
     for test in "$folder"/*.asm; do
         # Skip if no .asm files
         [ -e "$test" ] || continue
 
-        echo "----------------------------------" >> "$OUT_FILE"
-        echo "TEST FILE: $test" >> "$OUT_FILE"
-        echo "----------------------------------" >> "$OUT_FILE"
+        echo "--------------------------------------------------------------------------------" >> "$OUT_FILE"
+        echo "                      TEST FILE: $test" >> "$OUT_FILE"
+        echo "--------------------------------------------------------------------------------" >> "$OUT_FILE"
 
         "$VM_BIN" -ae "$test" >> "$OUT_FILE" 2>&1
 
