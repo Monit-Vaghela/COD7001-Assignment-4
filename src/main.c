@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
     if (strcmp(mode, "-a") == 0) {
         if (assemble(file, NULL) < 0) return 1;
-        printf("Assembly completed\n");
+        printf("Assembly completed: %s.bin generated\n", file);
         return 0;
     }
 

@@ -1,0 +1,393 @@
+LAB 4 VM TEST RESULTS
+=====================
+
+==============================
+TEST GROUP: easy
+==============================
+
+----------------------------------
+TEST FILE: easy/test1.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 5
+OPCODE : ff
+STACK: [15, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: easy/test2.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 5
+OPCODE : ff
+STACK: [13, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: easy/test3.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 5
+OPCODE : ff
+STACK: [42, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: easy/test4.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 5
+OPCODE : ff
+STACK: [8, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: easy/test5.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 4
+OPCODE : ff
+STACK: [25, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: easy/test6.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 6
+OPCODE : ff
+STACK: [99, ]
+CALL STACK: []
+
+==============================
+TEST GROUP: medium
+==============================
+
+----------------------------------
+TEST FILE: medium/test1.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 33
+OPCODE : ff
+STACK: [55, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: medium/test2.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 33
+OPCODE : ff
+STACK: [120, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: medium/test3.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 9
+OPCODE : ff
+STACK: [100, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: medium/test4.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 13
+OPCODE : ff
+STACK: [30, ]
+CALL STACK: []
+
+==============================
+TEST GROUP: hard
+==============================
+
+----------------------------------
+TEST FILE: hard/test1.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 4
+OPCODE : ff
+STACK: [36, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test2.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 4
+OPCODE : ff
+STACK: [25, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test3.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 4
+OPCODE : ff
+STACK: [17, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test4.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 35
+OPCODE : ff
+STACK: [14, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test5.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 22
+OPCODE : ff
+STACK: [0, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test6.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 87
+OPCODE : ff
+STACK: [7, 7, 86, 8, 7, 87, 9, 7, 88, 10, 7, 89, 0, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test7.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 42
+OPCODE : ff
+STACK: [6, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: hard/test8.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+==============================
+TEST GROUP: invalid
+==============================
+
+----------------------------------
+TEST FILE: invalid/test1.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 0]: Stack Is Empty Cannot Pop
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test2.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM ERROR / 2]: Not enough Operands on stack to perform ADD
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 2
+OPCODE : ff
+STACK: [10, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test3.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 2
+OPCODE : ff
+STACK: [0, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test4.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 0]: Stack is empty
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test5.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 4] Denominator cannot be 0
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 4
+OPCODE : ff
+STACK: [10, ]
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test6.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 0]: Out of Bound Address
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test7.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 0]: Stack is empty
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+----------------------------------
+TEST FILE: invalid/test8.asm
+----------------------------------
+Debug mode: OFF
+Initializing virtual machine
+[VM Error / 0]: No Return Value present in call stack
+
+
+FINAL VM STATE
+-----------------------VM STATE-----------------------
+PC : 0
+OPCODE : ff
+STACK: []
+CALL STACK: []
+
+==============================
+ALL TESTS COMPLETED
+==============================

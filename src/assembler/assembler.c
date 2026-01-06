@@ -18,6 +18,35 @@ static int label_count = 0;
 
 #define INITIAL_CAPACITY 256
 
+static int write_bin(const char *asm_file,
+                     unsigned char *code,
+                     int size)
+{
+    char out_name[256];
+    const char *dot = strrchr(asm_file, '.');
+
+    if (dot && strcmp(dot, ".asm") == 0) {
+        // copy filename without ".asm"
+        size_t len = dot - asm_file;
+        snprintf(out_name, sizeof(out_name), "%.*s.bin",
+                 (int)len, asm_file);
+    } else {
+        // fallback: just append .bin
+        snprintf(out_name, sizeof(out_name), "%s.bin", asm_file);
+    }
+
+    FILE *out = fopen(out_name, "wb");
+    if (!out) {
+        perror("Assembler: output file");
+        return -1;
+    }
+
+    fwrite(code, 1, size, out);
+    fclose(out);
+    return 0;
+}
+
+
 static void emit_u8(unsigned char **buf, int *size, int *cap, uint8_t v) {
     if (*size + 1 > *cap) {
         *cap *= 2;
@@ -159,10 +188,14 @@ int assemble(const char *input_file, unsigned char **out_code) {
 
     fclose(in);
 
-    if (out_code)
+    if (out_code) {
         *out_code = code;
-    else
+    } else {
+        /* -a mode: write .bin file */
+        write_bin(input_file, code, size);
         free(code);
+    }
 
     return size;
+
 }

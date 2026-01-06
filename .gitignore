@@ -1,8 +1,9 @@
 # ===== Build artifacts =====
-lab4_vm
+VM
 *.o
 *.out
 *.exe
+*.bin
 
 # ===== Temporary files =====
 *~
