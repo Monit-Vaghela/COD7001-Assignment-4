@@ -1,0 +1,10 @@
+metric,value
+instruction_count,205
+
+category,time_seconds,percentage
+stack,0.000243,21.19
+memory,0.000090,7.85
+alu,0.000044,3.84
+control,0.000056,4.88
+other,0.000714,62.25
+total,0.001147,100.00

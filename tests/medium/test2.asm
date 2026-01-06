@@ -1,9 +1,9 @@
-# 5! = 120
+# 8!
 
 PUSH 1
 STORE 0       # result
 
-PUSH 5
+PUSH 16
 STORE 1       # n
 
 loop:

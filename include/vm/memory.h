@@ -1,7 +1,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#define MEM_SIZE 1024
+#define MEM_SIZE 256
 
 extern int mem_error_flag;
 void memory_init(int *memory);

@@ -1,7 +1,12 @@
 #include <vm/vm.h>
+#include <vm/metrics.h>
 #include <stdio.h>
+#include <time.h>
 
 static int vm_error_flag = 0;
+static unsigned char mem_initialized[MEM_SIZE];
+
+
 
 static int arithmatic_underflow(vm *vm, char *operator){
     if(vm->stack.top < 1){
@@ -41,14 +46,30 @@ static int check_next_byte(vm *vm, char *opcode){
 }
 
 static void print_vm_state(vm *vm, unsigned char opcode){
-    printf("-----------------------VM STATE-----------------------\n");
-    printf("PC : %d\n", vm->pc);
-    printf("OPCODE : %02x\n", opcode);
-    printf("STACK: ");
+    printf("\n====================================================\n");
+    printf("                 VIRTUAL MACHINE STATE               \n");
+    printf("====================================================\n");
+
+    printf("PC      : %-4d\n", vm->pc);
+    printf("OPCODE  : 0x%02X\n", opcode);
+    printf("RUNNING : %s\n", vm->running ? "YES" : "NO");
+
+    printf("\n---------------------- STACK ------------------------\n");
     stack_print(&vm->stack);
-    printf("CALL STACK: ");
+
+    printf("\n------------------- CALL STACK ----------------------\n");
     stack_print(&vm->call_stack);
+
+    printf("\n---------------------- MEMORY -----------------------\n");
+    for(int i = 0; i < MEM_SIZE; i++){
+        if(mem_initialized[i]){
+            printf("[ADDR %3d] = %d\n", i, vm->memory[i]);
+        }
+    }
+
+    printf("====================================================\n");
 }
+
 
 void vm_init(vm *vm, unsigned char *code, int code_size){
     printf("Initializing virtual machine\n");
@@ -60,11 +81,16 @@ void vm_init(vm *vm, unsigned char *code, int code_size){
     stack_init(&vm->stack);
     stack_init(&vm->call_stack);
     memory_init(vm->memory);
+
+    for(int i = 0; i < MEM_SIZE; i++)
+        mem_initialized[i] = 0;
 }
 
-void vm_run(vm *vm, int debug) {
+void vm_run(vm *vm, int debug, int benchmark) {
     while(vm->running && vm->pc < vm->code_size){
         unsigned char opcode = vm->code[vm->pc];
+
+        if(benchmark) instruction_count++;
         if(debug) print_vm_state(vm, opcode);
         //printf("Current Instruction : %02x\n", current_instr);
         switch (opcode){
@@ -108,10 +134,14 @@ void vm_run(vm *vm, int debug) {
 
             case ADD:{
                 if(arithmatic_underflow(vm, "ADD") != 0) break;
-
+                
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
-                stack_push(&vm->stack, a + b);
+                clock_t t1 = clock();
+                int c = a + b;
+                clock_t t2 = clock();
+                alu_time += (t2 - t1);
+                stack_push(&vm->stack, c);
                 (vm->pc)++;
                 break;
             }
@@ -121,7 +151,11 @@ void vm_run(vm *vm, int debug) {
 
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
-                stack_push(&vm->stack, a - b);
+                clock_t t1 = clock();
+                int c = a - b;
+                clock_t t2 = clock();
+                alu_time += (t2 - t1);
+                stack_push(&vm->stack, c);
                 (vm->pc)++;
                 break;
             }
@@ -131,7 +165,12 @@ void vm_run(vm *vm, int debug) {
 
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
-                stack_push(&vm->stack, a * b);
+
+                clock_t t1 = clock();
+                int c = a * b;
+                clock_t t2 = clock();
+                alu_time += (t2 - t1);
+                stack_push(&vm->stack, c);
                 (vm->pc)++;
                 break;
             }
@@ -147,7 +186,11 @@ void vm_run(vm *vm, int debug) {
                 }
 
                 int a = stack_pop(&vm->stack);
-                stack_push(&vm->stack, a / b);
+                clock_t t1 = clock();
+                int c = a / b;
+                clock_t t2 = clock();
+                alu_time += (t2 - t1);
+                stack_push(&vm->stack, c);
                 (vm->pc)++;
                 break;
             }
@@ -157,10 +200,14 @@ void vm_run(vm *vm, int debug) {
             
                 int b = stack_pop(&vm->stack);
                 int a = stack_pop(&vm->stack);
-
+                clock_t t1 = clock();
                 if(a < b){
+                    clock_t t2 = clock();
+                    alu_time += (t2 - t1);
                     stack_push(&vm->stack, 1);
                 }else{
+                    clock_t t2 = clock();
+                    alu_time += (t2 - t1);
                     stack_push(&vm->stack, 0);
                 }
                 (vm->pc)++;
@@ -168,14 +215,18 @@ void vm_run(vm *vm, int debug) {
             }
 
             case JMP:{
+                clock_t t1 = clock();
                 int addr = check_loop(vm, "JMP");
                 if(vm_error_flag != 0) break;
                 if (debug) printf("JUMPING TO %d\n", addr);
                 vm->pc = addr;
+                clock_t t2 = clock();
+                control_time += (t2 - t1);
                 break;     
             }
 
             case JZ:{
+                clock_t t1 = clock();
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
                     printf("[VM Error / %d]: Stack is empty\n", vm->pc);
@@ -192,10 +243,13 @@ void vm_run(vm *vm, int debug) {
                 } else {
                     vm->pc += 2;
                 }
+                clock_t t2 = clock();
+                control_time += (t2 - t1);
                 break;
             }
 
             case JNZ:{
+                clock_t t1 = clock();
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
                     printf("[VM Error / %d]: Stack is empty\n", vm->pc);
@@ -212,6 +266,8 @@ void vm_run(vm *vm, int debug) {
                 } else {
                     vm->pc += 2;
                 }
+                clock_t t2 = clock();
+                control_time += (t2 - t1);
                 break;
             }
 
@@ -229,6 +285,8 @@ void vm_run(vm *vm, int debug) {
                     vm->running = 0;
                     break;
                 }
+                mem_initialized[addr] = 1;
+
                 if (debug) printf("DATA STORED AT %d is %d\n", addr, top);
                 (vm->pc) += 2;
                 
@@ -252,6 +310,7 @@ void vm_run(vm *vm, int debug) {
             }
 
             case CALL:{
+                clock_t t1 = clock();
                 if(check_next_byte(vm, "CALL") != 0) break;
 
                 int addr = vm->code[vm->pc + 1];
@@ -268,10 +327,13 @@ void vm_run(vm *vm, int debug) {
                 }
 
                 vm->pc = addr;
+                clock_t t2 = clock();
+                control_time += (t2 - t1);
                 break;
             }
 
             case RET:{
+                clock_t t1 = clock();
                 int ret_addr = stack_pop(&vm->call_stack);
                 if(stck_error_flag != 0){
                     printf("[VM Error / %d]: No Return Value present in call stack\n", vm->pc);
@@ -284,6 +346,8 @@ void vm_run(vm *vm, int debug) {
                     break;
                 }
                 vm->pc = ret_addr;
+                clock_t t2 = clock();
+                control_time += (t2 - t1);
                 break;
             }
 

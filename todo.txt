@@ -90,9 +90,3 @@ Facts to be mentions
     * test6.asm -> array addition using loop
     * test7.asm -> GCD
 7. sh script only runs -ae mode without debug, also it stores the output in output.txt
-
-
-to do :
-    * Add lt, gt and mod operands
-    * check for out of bound memory acess in load and store (invalid/test3, test4)
-    * pretty print

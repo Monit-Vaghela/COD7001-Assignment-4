@@ -1,94 +1,51 @@
-# A=[1,2,3,4], B=[10,20,30,40]
-# C=A+B → C=[11,22,33,44]
-# Final stack value = 44
-
-# --------------------
-# i = 0
-# --------------------
-PUSH 0
-STORE 100
-
-# --------------------
-# Initialize arrays
-# --------------------
-init_loop:
-LOAD 100
-PUSH 4
-CMP
-JZ add_phase
-
-# A[i] = i + 1
-LOAD 100
+# A
 PUSH 1
-ADD
-LOAD 100
-ADD
 STORE 0
-
-# B[i] = (i + 1) * 10
-LOAD 100
-PUSH 1
-ADD
-PUSH 10
-MUL
-LOAD 100
-ADD
-STORE 10
-
-# i++
-LOAD 100
-PUSH 1
-ADD
-STORE 100
-
-JMP init_loop
-
-# --------------------
-# i = 0 again
-# --------------------
-add_phase:
-PUSH 0
-STORE 100
-
-# --------------------
-# C[i] = A[i] + B[i]
-# --------------------
-add_loop:
-LOAD 100
+PUSH 2
+STORE 1
+PUSH 3
+STORE 2
 PUSH 4
-CMP
-JZ end
+STORE 3
+PUSH 5
+STORE 4
 
-# Load A[i]
-LOAD 100
+# B
+PUSH 6
+STORE 50
+PUSH 7
+STORE 51
+PUSH 8
+STORE 52
+PUSH 9
+STORE 53
+PUSH 10
+STORE 54
+
+# C = A + B
 LOAD 0
-ADD
-LOAD 0
-
-# Load B[i]
-LOAD 100
-LOAD 10
-ADD
-LOAD 10
-
-# Add and store in C[i]
-ADD
-LOAD 100
-LOAD 20
-ADD
-STORE 20
-
-# i++
-LOAD 100
-PUSH 1
+LOAD 50
 ADD
 STORE 100
 
-JMP add_loop
+LOAD 1
+LOAD 51
+ADD
+STORE 101
 
-# --------------------
-# End
-# --------------------
-end:
-LOAD 23     # C[3] = 44
+LOAD 2
+LOAD 52
+ADD
+STORE 102
+
+LOAD 3
+LOAD 53
+ADD
+STORE 103
+
+LOAD 4
+LOAD 54
+ADD
+STORE 104
+
 HALT

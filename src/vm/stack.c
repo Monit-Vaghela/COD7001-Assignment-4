@@ -1,6 +1,8 @@
 #include <vm/stack.h>
+#include <vm/metrics.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 int stck_error_flag = 0;
 
@@ -9,17 +11,23 @@ void stack_init(stack *s) {
 }
 
 int stack_push(stack *s, int value) {
+    clock_t t1 = clock();
     if (stack_isfull(s) != 0) return 1;
 
     s->data[++s->top] = value;
+    clock_t t2 = clock();
+    stack_time += (t2 - t1);
     return 0;
 }
 
 int stack_pop(stack *s) {
+    clock_t t1 = clock();
     if(stack_isempty(s) != 0) {
         stck_error_flag = 1;
         return 0;
     }
+    clock_t t2 = clock();
+    stack_time += (t2 - t1);
     return s->data[s->top--];
 }
 

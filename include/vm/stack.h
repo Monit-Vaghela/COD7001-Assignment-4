@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#define STACK_MAX 1024
+#define STACK_MAX 256
 
 typedef struct {
     int data[STACK_MAX];
