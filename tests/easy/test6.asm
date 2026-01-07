@@ -1,6 +1,6 @@
 # memory[2] = 99 → load memory[2] = 99
 
-PUSH 99
-STORE 2
-LOAD 2
+PUSH 100024
+STORE 20
+LOAD 20
 HALT

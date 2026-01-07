@@ -12,7 +12,6 @@ void memory_init(int *memory) {
 int memory_store(int *memory, int addr, int data){
     clock_t t1 = clock();
     if(addr >= MEM_SIZE || addr < 0){
-        printf("Out of bounds memory address\n");
         return 1;
     }
     memory[addr] = data;
@@ -25,7 +24,6 @@ int memory_store(int *memory, int addr, int data){
 int memory_load(int *memory, int addr){
     clock_t t1 = clock();
     if(addr >= MEM_SIZE || addr < 0){
-        printf("Out of bounds memory address\n");
         mem_error_flag = 1;
         return 0;
     }

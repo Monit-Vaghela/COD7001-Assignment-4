@@ -2,7 +2,7 @@
 #include <vm/metrics.h>
 #include <stdio.h>
 #include <time.h>
-
+#include <stdint.h>
 static int vm_error_flag = 0;
 static unsigned char mem_initialized[MEM_SIZE];
 
@@ -17,32 +17,31 @@ static int arithmatic_underflow(vm *vm, char *operator){
     return 0;
 }
 
-static int check_loop(vm *vm, char *loop_type){
-    if (vm->pc + 1 >= vm->code_size) {
-        printf("[VM Error / %d]: %s requires another byte\n", vm->pc, loop_type);
+static int check_next_4byte(vm *vm, char *opcode){
+    if(vm->pc + 4 >= vm->code_size){
+        printf("[VM Error / %d]: %s Requires 4 Operand bytes\n", vm->pc, opcode);
         vm->running = 0;
         vm_error_flag = 1;
-        return 1;
+        return 0;
     }
+    int32_t value = 0;
+    for (int i = 1; i <= 4; i++) {
+        value = (value << 8) | vm->code[vm->pc + i];
+    }
+    return value;
+}
 
-    int addr = vm->code[vm->pc + 1];
+static int check_loop(vm *vm, char *loop_type){
+    int addr = check_next_4byte(vm, loop_type);
+    if(vm_error_flag == 1) return 0;
 
     if (addr >= vm->code_size) {
         printf("[VM Error / %d]: Out of Bound Address\n", vm->pc);
         vm->running = 0;
         vm_error_flag = 1;
-        return 1;
+        return 0;
     }
     return addr;
-}
-
-static int check_next_byte(vm *vm, char *opcode){
-    if(vm->pc + 1 >= vm->code_size){
-        printf("[VM Error / %d]: %s Requires 2 bytes\n", vm->pc, opcode);
-        vm->running = 0;
-        return 1;
-    }
-    return 0;
 }
 
 static void print_vm_state(vm *vm, unsigned char opcode){
@@ -73,7 +72,6 @@ static void print_vm_state(vm *vm, unsigned char opcode){
     printf("====================================================\n");
 }
 
-
 void vm_init(vm *vm, unsigned char *code, int code_size){
     printf("Initializing virtual machine\n");
     vm->code = code;
@@ -99,16 +97,15 @@ void vm_run(vm *vm, int debug, int benchmark) {
         switch (opcode){
 
             case PUSH:{
-                if(check_next_byte(vm, "PUSH") != 0 ) break;
-    
-                (vm->pc)++;
-                int operand = vm->code[vm->pc];
+                int operand = check_next_4byte(vm, "PUSH");
+                if(vm_error_flag == 1) break;
+
                 if(stack_push(&vm->stack, operand) != 0){
                     printf("[VM Error / %d]: Stack is Full Cannot Push\n", vm->pc);
                     vm->running = 0;
                     break;
                 }
-                (vm->pc)++;
+                (vm->pc) += 5;
                 break;
             }
             
@@ -244,7 +241,7 @@ void vm_run(vm *vm, int debug, int benchmark) {
                     if (debug) printf("JUMPING TO %d\n", addr);
                     vm->pc = addr;
                 } else {
-                    vm->pc += 2;
+                    vm->pc += 5;
                 }
                 clock_t t2 = clock();
                 control_time += (t2 - t1);
@@ -267,7 +264,7 @@ void vm_run(vm *vm, int debug, int benchmark) {
                     if (debug) printf("JUMPING TO %d\n", addr);
                     vm->pc = addr;
                 } else {
-                    vm->pc += 2;
+                    vm->pc += 5;
                 }
                 clock_t t2 = clock();
                 control_time += (t2 - t1);
@@ -275,9 +272,9 @@ void vm_run(vm *vm, int debug, int benchmark) {
             }
 
             case STORE:{
-                if(check_next_byte(vm, "STORE") != 0) break;
-            
-                int addr = vm->code[vm->pc + 1];
+                int addr = check_next_4byte(vm, "STORE");
+                if(vm_error_flag == 1) break;
+
                 int top = stack_pop(&vm->stack);
                 if (stck_error_flag) {
                     printf("[VM Error / %d]: Stack is empty\n", vm->pc);
@@ -285,45 +282,47 @@ void vm_run(vm *vm, int debug, int benchmark) {
                     break;
                 }
                 if(memory_store(vm->memory, addr, top) != 0){
+                    printf("[VM Error / %d] %d Address is Out of Bounds", vm->pc, addr);
                     vm->running = 0;
                     break;
                 }
                 mem_initialized[addr] = 1;
 
                 if (debug) printf("DATA STORED AT %d is %d\n", addr, top);
-                (vm->pc) += 2;
+                (vm->pc) += 5;
                 
                 break;
             }
 
             case LOAD:{
-                if(check_next_byte(vm, "LOAD") != 0) break;
-                int addr = vm->code[vm->pc + 1];
+                int addr = check_next_4byte(vm, "LOAD");
+                if(vm_error_flag == 1) break;
 
                 int data = memory_load(vm->memory, addr);
                 if(mem_error_flag != 0){
+                    printf("[VM Error / %d] %d Address is Out of Bounds", vm->pc, addr);
                     vm->running = 0;
                     break;
                 }
                 stack_push(&vm->stack, data);
 
                 if (debug) printf("DATA %d Loaded from %d\n", data, addr);
-                (vm->pc) += 2;
+                (vm->pc) += 5;
                 break;
             }
 
             case CALL:{
                 clock_t t1 = clock();
-                if(check_next_byte(vm, "CALL") != 0) break;
+                int addr = check_next_4byte(vm, "CALL");
+                if(vm_error_flag == 1) break;
 
-                int addr = vm->code[vm->pc + 1];
                 if(addr >= vm->code_size){
                     printf("[VM Error / %d]: Call Address %d is out of bounds\n", vm->pc, addr);
                     vm->running = 0;
                     break;
                 }
 
-                if (stack_push(&vm->call_stack, vm->pc + 2) != 0) {
+                if (stack_push(&vm->call_stack, vm->pc + 5) != 0) {
                     printf("[VM Error / %d]: Call Stack is Full\n", vm->pc);
                     vm->running = 0;
                     break;

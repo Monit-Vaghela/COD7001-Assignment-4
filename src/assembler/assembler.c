@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <assembler/assembler.h>
+#include <vm/instruction.h>  
 
 #define MAX_LABELS 128
 
@@ -15,23 +16,17 @@ typedef struct {
 static label_t labels[MAX_LABELS];
 static int label_count = 0;
 
-
 #define INITIAL_CAPACITY 256
 
-static int write_bin(const char *asm_file,
-                     unsigned char *code,
-                     int size)
-{
+static int write_bin(const char *asm_file, unsigned char *code, int size) {
     char out_name[256];
     const char *dot = strrchr(asm_file, '.');
 
     if (dot && strcmp(dot, ".asm") == 0) {
-        // copy filename without ".asm"
         size_t len = dot - asm_file;
         snprintf(out_name, sizeof(out_name), "%.*s.bin",
                  (int)len, asm_file);
     } else {
-        // fallback: just append .bin
         snprintf(out_name, sizeof(out_name), "%s.bin", asm_file);
     }
 
@@ -46,17 +41,25 @@ static int write_bin(const char *asm_file,
     return 0;
 }
 
-
 static void emit_u8(unsigned char **buf, int *size, int *cap, uint8_t v) {
     if (*size + 1 > *cap) {
         *cap *= 2;
         *buf = realloc(*buf, *cap);
         if (!*buf) {
-            fprintf(stderr, "Assembler: realloc failed\n");
+            printf("[Assembler Error] Memory allocation failed\n");
             exit(1);
         }
     }
     (*buf)[(*size)++] = v;
+}
+
+/* break int32 → 4 × uint8 */
+static void emit_i32(unsigned char **buf, int *size, int *cap, int32_t v)
+{
+    for (int byte = 3; byte >= 0; byte--) {
+        uint8_t part = (v >> (byte * 8)) & 0xFF;
+        emit_u8(buf, size, cap, part);
+    }
 }
 
 static int find_label(const char *name) {
@@ -77,7 +80,7 @@ int assemble(const char *input_file, unsigned char **out_code) {
     char line[256];
     char instr[32], operand[32];
 
-    /* -------- PASS 1: collect labels -------- */
+    // PASS 1: for addressing labels
     int pc = 0;
     label_count = 0;
 
@@ -97,14 +100,14 @@ int assemble(const char *input_file, unsigned char **out_code) {
         }
 
         if (sscanf(line, "%31s %31s", instr, operand) == 2)
-            pc += 2;   // opcode + operand
+            pc += 5;   // opcode + int32
         else
             pc += 1;   // opcode only
     }
 
     rewind(in);
 
-    /* -------- PASS 2: generate bytecode -------- */
+    //PASS 2 : Generate Bytecode
     int capacity = INITIAL_CAPACITY;
     int size = 0;
     unsigned char *code = malloc(capacity);
@@ -120,7 +123,7 @@ int assemble(const char *input_file, unsigned char **out_code) {
             continue;
 
         if (strchr(line, ':'))
-            continue;   // skip label-only lines
+            continue;
 
         /* instruction with operand */
         if (sscanf(line, "%31s %31s", instr, operand) == 2) {
@@ -131,7 +134,7 @@ int assemble(const char *input_file, unsigned char **out_code) {
             } else {
                 value = find_label(operand);
                 if (value < 0) {
-                    fprintf(stderr, "Assembler error: unknown label %s\n", operand);
+                    printf("[Assembler Error] Unknown label: %s\n", operand);
                     free(code);
                     fclose(in);
                     return -1;
@@ -140,27 +143,27 @@ int assemble(const char *input_file, unsigned char **out_code) {
 
             if (!strcmp(instr, "PUSH")) {
                 emit_u8(&code, &size, &capacity, PUSH);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "JMP")) {
                 emit_u8(&code, &size, &capacity, JMP);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "JZ")) {
                 emit_u8(&code, &size, &capacity, JZ);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "JNZ")) {
                 emit_u8(&code, &size, &capacity, JNZ);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "LOAD")) {
                 emit_u8(&code, &size, &capacity, LOAD);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "STORE")) {
                 emit_u8(&code, &size, &capacity, STORE);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else if (!strcmp(instr, "CALL")) {
                 emit_u8(&code, &size, &capacity, CALL);
-                emit_u8(&code, &size, &capacity, (uint8_t)value);
+                emit_i32(&code, &size, &capacity, value);
             } else {
-                fprintf(stderr, "Assembler error: unknown instruction %s\n", instr);
+                printf("[Assembler Error] Unknown instruction: %s\n", instr);
                 free(code);
                 fclose(in);
                 return -1;
@@ -178,7 +181,7 @@ int assemble(const char *input_file, unsigned char **out_code) {
             else if (!strcmp(instr, "RET")) emit_u8(&code, &size, &capacity, RET);
             else if (!strcmp(instr, "HALT")) emit_u8(&code, &size, &capacity, HALT);
             else {
-                fprintf(stderr, "Assembler error: unknown instruction %s\n", instr);
+                printf("[Assembler Error] Unknown instruction: %s\n", instr);
                 free(code);
                 fclose(in);
                 return -1;
@@ -191,11 +194,9 @@ int assemble(const char *input_file, unsigned char **out_code) {
     if (out_code) {
         *out_code = code;
     } else {
-        /* -a mode: write .bin file */
         write_bin(input_file, code, size);
         free(code);
     }
 
     return size;
-
 }
