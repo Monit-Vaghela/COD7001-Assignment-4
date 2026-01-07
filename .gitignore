@@ -4,6 +4,7 @@ VM
 *.out
 *.exe
 *.bin
+zip.sh
 
 # ===== Temporary files =====
 *~
